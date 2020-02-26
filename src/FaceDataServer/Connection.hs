@@ -18,3 +18,8 @@ import Network.Socket.ByteString (recv)
 
 getFaceData :: Socket -> IO FaceData
 getFaceData sock = decode . fromStrict <$> recv sock (8 * 29)
+
+sendFaceData :: Socket -> SockAddr -> FaceData -> IO ()
+sendFaceData sock addr d = do
+    let encoded = toStrict $ encode d
+    sendTo sock encoded addr
