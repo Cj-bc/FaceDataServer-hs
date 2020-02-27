@@ -9,11 +9,11 @@ Stability   : experimental
 -}
 module FaceDataServer.Connection where
 
-import Data.Binary (decode)
-import Data.ByteString.Lazy (fromStrict)
+import Data.Binary (decode, encode)
+import Data.ByteString.Lazy (fromStrict, toStrict)
 import FaceDataServer.Types
-import Network.Socket (Socket)
-import Network.Socket.ByteString (recv)
+import Network.Socket (Socket, SockAddr)
+import Network.Socket.ByteString (recv, sendTo)
 
 
 getFaceData :: Socket -> IO FaceData
