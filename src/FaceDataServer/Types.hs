@@ -28,7 +28,7 @@ data FaceData = FaceData { _face_x_radian :: Radian
 makeLenses ''FaceData
 
 -- | Default value for FaceData
-defaultFaceData = FaceData 0.0 0.0 0.0 0 0 0 0
+defaultFaceData = FaceData 0.0 0.0 0.0 100 100 100 100
 
 -- instance Binary FaceData {{{
 instance Binary FaceData where
