@@ -44,10 +44,10 @@ instance Binary FaceData where
         putDoublebe $ fd^.face_x_radian
         putDoublebe $ fd^.face_y_radian
         putDoublebe $ fd^.face_z_radian
-        putByteString . encodeNum $ fd^.mouth_height_percent
-        putByteString . encodeNum $ fd^.mouth_width_percent
-        putByteString . encodeNum $ fd^.left_eye_percent
-        putByteString . encodeNum $ fd^.right_eye_percent
+        putInt8 $ fd^.mouth_height_percent
+        putInt8 $ fd^.mouth_width_percent
+        putInt8 $ fd^.left_eye_percent
+        putInt8 $ fd^.right_eye_percent
 
     get = do
         header <- getInt8
