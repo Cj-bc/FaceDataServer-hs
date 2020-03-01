@@ -36,10 +36,7 @@ defaultFaceData = FaceData 0.0 0.0 0.0 0 0 0 0
 -- instance Binary FaceData {{{
 instance Binary FaceData where
     put fd = do
-        let encodeNum        = toStrict . encode
-            encodeVersionNum = BS.drop 4 . encodeNum
-        putByteString $ encodeVersionNum protocolMajorNum
-        putByteString $ encodeVersionNum protocolMinorNum
+        putInt8 $ shift protocolMajorNum 4 + protocolMinorNum
 
         putDoublebe $ fd^.face_x_radian
         putDoublebe $ fd^.face_y_radian
