@@ -7,14 +7,17 @@ import Control.Monad (when)
 import Data.Binary
 import Data.Binary.Get
 import Data.Binary.Put
+import Data.Bits
 import qualified Data.ByteString as BS
 import Data.ByteString.Lazy (fromStrict, toStrict)
+import Data.Int (Int8)
 
 
+protocolMajorNum, protocolMinorNum :: Int8
 (protocolMajorNum, protocolMinorNum) = (1, 0)
 
 type Radian = Double
-type Percent = Int
+type Percent = Int8
 
 -- | Represent 'FaceData' which will be served from the server
 data FaceData = FaceData { _face_x_radian :: Radian
@@ -47,24 +50,21 @@ instance Binary FaceData where
         putByteString . encodeNum $ fd^.right_eye_percent
 
     get = do
-        let null4bit = "\NUL\NUL\NUL\NUL" :: BS.ByteString
-            decodeNum = decode . fromStrict
+        header <- getInt8
+        let versionMaj = shift header (-4)
+            -- Clear upper 4 bit by xor 0b11110000
+            -- (As Int8 is singed, -112)
+            versionMin = header `xor` (-112)
 
-        -- == Eat version number
-        vMajor <- getByteString 4
-        let vMajorInt  = decodeNum (null4bit <> vMajor) :: Int
-        when (vMajorInt /= protocolMajorNum) $ error "Major version not match"
-
-        vMinor <- getByteString 4
-        let vMinorInt = decodeNum (null4bit <> vMinor) :: Int
-        when (vMinorInt /= protocolMinorNum) $ error "Minor version not match"
+        when (versionMaj /= protocolMajorNum) $ error "Protocol Major version differ"
+        when (versionMin /= protocolMinorNum) $ error "Protocol Minor version differ"
 
         -- == Eat actual data
         FaceData <$> getDoublebe
                  <*> getDoublebe
                  <*> getDoublebe
-                 <*> (decodeNum <$> getByteString 8)
-                 <*> (decodeNum <$> getByteString 8)
-                 <*> (decodeNum <$> getByteString 8)
-                 <*> (decodeNum <$> getByteString 8)
+                 <*> getInt8
+                 <*> getInt8
+                 <*> getInt8
+                 <*> getInt8
 -- }}}
