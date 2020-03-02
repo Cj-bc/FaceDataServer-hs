@@ -47,7 +47,7 @@ instance Binary FaceData where
         putInt8 $ fromIntegral $ fd^.right_eye_percent
 
     get = do
-        header <- getInt8
+        header <- getWord8
         let versionMaj = fromIntegral $ shift header (-4)
             -- Clear upper 4 bit by `and 0b00001111'
             -- (As Int8 is singed, -112)
@@ -66,8 +66,8 @@ instance Binary FaceData where
         FaceData <$> getDoublebe
                  <*> getDoublebe
                  <*> getDoublebe
-                 <*> (fromIntegral <$> getInt8)
-                 <*> (fromIntegral <$> getInt8)
-                 <*> (fromIntegral <$> getInt8)
-                 <*> (fromIntegral <$> getInt8)
+                 <*> (fromIntegral <$> getWord8)
+                 <*> (fromIntegral <$> getWord8)
+                 <*> (fromIntegral <$> getWord8)
+                 <*> (fromIntegral <$> getWord8)
 -- }}}
