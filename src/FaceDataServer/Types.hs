@@ -13,11 +13,11 @@ import Data.ByteString.Lazy (fromStrict, toStrict)
 import Data.Int (Int8)
 
 
-protocolMajorNum, protocolMinorNum :: Int8
+protocolMajorNum, protocolMinorNum :: Int
 (protocolMajorNum, protocolMinorNum) = (1, 0)
 
 type Radian = Double
-type Percent = Int8
+type Percent = Int
 
 -- | Represent 'FaceData' which will be served from the server
 data FaceData = FaceData { _face_x_radian :: Radian
@@ -36,22 +36,22 @@ defaultFaceData = FaceData 0.0 0.0 0.0 100 100 100 100
 -- instance Binary FaceData {{{
 instance Binary FaceData where
     put fd = do
-        putInt8 $ shift protocolMajorNum 4 + protocolMinorNum
+        putInt8 $ fromIntegral $ shift protocolMajorNum 4 + protocolMinorNum
 
         putDoublebe $ fd^.face_x_radian
         putDoublebe $ fd^.face_y_radian
         putDoublebe $ fd^.face_z_radian
-        putInt8 $ fd^.mouth_height_percent
-        putInt8 $ fd^.mouth_width_percent
-        putInt8 $ fd^.left_eye_percent
-        putInt8 $ fd^.right_eye_percent
+        putInt8 $ fromIntegral $ fd^.mouth_height_percent
+        putInt8 $ fromIntegral $ fd^.mouth_width_percent
+        putInt8 $ fromIntegral $ fd^.left_eye_percent
+        putInt8 $ fromIntegral $ fd^.right_eye_percent
 
     get = do
         header <- getInt8
-        let versionMaj = shift header (-4)
+        let versionMaj = fromIntegral $ shift header (-4)
             -- Clear upper 4 bit by xor 0b11110000
             -- (As Int8 is singed, -112)
-            versionMin = header `xor` (-112)
+            versionMin = fromIntegral $ header `xor` (-112)
 
         when (versionMaj /= protocolMajorNum) $ error "Protocol Major version differ"
         when (versionMin /= protocolMinorNum) $ error "Protocol Minor version differ"
@@ -60,8 +60,8 @@ instance Binary FaceData where
         FaceData <$> getDoublebe
                  <*> getDoublebe
                  <*> getDoublebe
-                 <*> getInt8
-                 <*> getInt8
-                 <*> getInt8
-                 <*> getInt8
+                 <*> (fromIntegral <$> getInt8)
+                 <*> (fromIntegral <$> getInt8)
+                 <*> (fromIntegral <$> getInt8)
+                 <*> (fromIntegral <$> getInt8)
 -- }}}
