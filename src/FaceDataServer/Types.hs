@@ -53,8 +53,14 @@ instance Binary FaceData where
             -- (As Int8 is singed, -112)
             versionMin = fromIntegral $ header `xor` (-112)
 
-        when (versionMaj /= protocolMajorNum) $ error "Protocol Major version differ"
-        when (versionMin /= protocolMinorNum) $ error "Protocol Minor version differ"
+        when (versionMaj /= protocolMajorNum) $ error $ unlines [ "Protocol Major version differ:"
+                                                                , "protocol used in this lib: " ++ show protocolMajorNum
+                                                                , "protocol used by peer: " ++ show versionMaj
+                                                                ]
+        when (versionMin /= protocolMinorNum) $ error $ unlines [ "Protocol Minor version differ:"
+                                                                , "protocol used in this lib: " ++ show protocolMinorNum
+                                                                , "protocol used by peer: " ++ show versionMin
+                                                                ]
 
         -- == Eat actual data
         FaceData <$> getDoublebe
