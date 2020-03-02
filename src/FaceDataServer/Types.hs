@@ -49,9 +49,9 @@ instance Binary FaceData where
     get = do
         header <- getInt8
         let versionMaj = fromIntegral $ shift header (-4)
-            -- Clear upper 4 bit by xor 0b11110000
+            -- Clear upper 4 bit by `and 0b00001111'
             -- (As Int8 is singed, -112)
-            versionMin = fromIntegral $ header `xor` (-112)
+            versionMin = fromIntegral $ header .&. 15
 
         when (versionMaj /= protocolMajorNum) $ error $ unlines [ "Protocol Major version differ:"
                                                                 , "protocol used in this lib: " ++ show protocolMajorNum
