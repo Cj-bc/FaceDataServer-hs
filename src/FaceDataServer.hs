@@ -14,3 +14,6 @@ module FaceDataServer
 ) where
 
 import FaceDataServer.Types
+
+defaultGroupAddr = "226.70.68.83"
+defaultPortNumber = 5032
