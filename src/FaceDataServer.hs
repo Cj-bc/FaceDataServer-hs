@@ -11,6 +11,8 @@ Current protocol version: 1.0.0
 
 module FaceDataServer
 ( FaceData
+, defaultGroupAddr
+, defaultPortNumber
 ) where
 
 import FaceDataServer.Types
